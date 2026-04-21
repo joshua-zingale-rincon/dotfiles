@@ -1,16 +1,27 @@
 export PATH="$HOME/.local/bin:$PATH"
 
 if [[ -z $NO_COLOR ]]; then
-	GREEN="\e[32;1m"
-	CYAN="\e[36;1m"
+	GREEN="\e[32m"
+	CYAN="\e[36m"
 	RED="\e[31m"
+	MAGENTA="\e[35m"
+	YELLOW="\e[33m"
+	BOLD="\e[1m"
 	RESET="\e[0m"
 else 
 	GREEN=""
 	CYAN=""
 	RED=""
+	MAGENTA=""
+	YELLOW=""
+	BOLD=""
 	RESET=""
 fi
+
+__add_to_path_if_not_in_path() {
+	item_to_add=$1
+	[[ $PATH =~ (^|:)${item_to_add}(:|$) ]] || export PATH="$item_to_add:$PATH"
+}
 
 if [[ -d "$HOME/.bashrc.d" ]]; then
 	for config in "$HOME/.bashrc.d/"*.bash; do
