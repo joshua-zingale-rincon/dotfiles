@@ -1,3 +1,5 @@
+[ -z "$PS1" ] && return
+
 export PATH="$HOME/.local/bin:$PATH"
 
 if [[ -z $NO_COLOR ]]; then
