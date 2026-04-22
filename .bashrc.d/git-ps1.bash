@@ -3,7 +3,7 @@ export PROMPT_COMMAND='__set_ps1'
 __set_ps1(){
 
 	if git status > /dev/null 2>&1; then
-		CURR_GIT_BRANCH="$(git branch --show-curr)"
+		CURR_GIT_BRANCH="$(git symbolic-ref --short HEAD)"
 		PROJECT_DIR="$(git rev-parse --show-toplevel)"
 		PROJECT_NAME=$(basename -s .git $(git config --get remote.origin.url) 2> /dev/null || basename "$PROJECT_DIR")
 
