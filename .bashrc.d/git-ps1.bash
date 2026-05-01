@@ -8,15 +8,31 @@ __set_ps1(){
 		PROJECT_NAME=$(basename -s .git $(git config --get remote.origin.url) 2> /dev/null || basename "$PROJECT_DIR")
 
 
-		BRANCH_INSERT="\[${MAGENTA}\](${CURR_GIT_BRANCH}) "
+		BRANCH_INSERT="\[${MAGENTA}\](${CURR_GIT_BRANCH})\[${RESET}\]"
 
-		PROJECT_PATH="$(realpath . --relative-to="$PROJECT_DIR" | sed "s/^\.\{0,1\}/\//") "
+		PROJECT_PATH="$(realpath . --relative-to="$PROJECT_DIR" | sed "s/^\.\{0,1\}/\//")"
 
-		export PS1="\[${BOLD}${GREEN}\]@${PROJECT_NAME}\[${CYAN}\]:\[${GREEN}\]${PROJECT_PATH}\[${RESET}\]${BRANCH_INSERT}\[${BOLD}${CYAN}\]\$\[${RESET}\] "
+		_path="\[${BOLD}${GREEN}\]@${PROJECT_NAME}\[${CYAN}\]:\[${GREEN}\]${PROJECT_PATH}\[${RESET}\] ${BRANCH_INSERT}"
 	else
 		PROJECT_DIR=""
-		export PS1="\[${BOLD}${GREEN}\]\w \[${CYAN}\]\$\[${RESET}\] "
+		_dir=$(pwd | sed "s|^/home/zingale.joshua|~|")
+		_path="\[${BOLD}${GREEN}\]${_dir}\[${RESET}\]"
 	fi
+
+	_visible_path=$(echo -e "$_path" | sed 's/\\\[[^\\]*\\\]//g')
+	
+	read TERM_ROWS TERM_COLS < <(stty size)
+
+	_line_threashold=$((TERM_COLS/3))
+
+	if [[ ${#_visible_path} -lt $_line_threashold ]]
+	then _prompt=" " 
+	else _prompt="\n"
+	fi
+		
+	_prompt="${_prompt}\[${BOLD}${CYAN}\]\$\[${RESET}\] "
+
+	export PS1="${_path}${_prompt}"
 
 	
 	if [[ $PROJECT_DIR != $LAST_PROJECT_DIR ]]; then
